@@ -1,10 +1,20 @@
-
 # ✂️ Anime Image Segmentation Tool (二次元图像部位分割工具)
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![YOLO](https://img.shields.io/badge/Model-YOLO-green.svg)
 ![Tkinter](https://img.shields.io/badge/GUI-Tkinter-orange.svg)
+![Platform](https://img.shields.io/badge/Platform-Windows-blue)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
+## 🚀 立即下载 / Download Now (Windows EXE)
+
+> **不想配置 Python 环境？** 直接下载打包好的可执行文件，解压即用！
+>
+> **Don't want to set up Python?** Download the pre-packaged executable to run immediately!
+
+📥 **[点击下载 / Download via Google Drive](https://drive.google.com/file/d/1RZLEMv5nYtTNErFrQc_938RjyhiMBUdl/view?usp=drive_link)**
+
+---
 
 > **一个基于 YOLO 的本地化 GUI 工具，用于批量识别并提取二次元角色的头部、躯干或腿部。**
 >
@@ -57,7 +67,10 @@ Designed for dataset creation, material collection, and anime image processing.
 
 ---
 
-## 🛠️ 安装与使用 (Installation & Usage)
+## 🛠️ 源码安装与使用 (Installation from Source)
+
+如果您想通过源码运行或进行修改，请参考以下步骤。如果您已下载 EXE，请跳过此步。
+If you want to run from source code or modify it, follow these steps. If you downloaded the EXE, skip this section.
 
 ### 1. 环境准备 (Prerequisites)
 
