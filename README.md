@@ -26,12 +26,15 @@
 - **可视化参数**: 修改裁剪参数时，通过动画实时演示裁剪范围的变化。
 - **实时预览**: 处理过程中实时展示识别到的部位预览图。
 - **智能日志**: 底部状态栏实时显示处理进度和日志信息。
+
 📥 **[点击下载 / Download via Google Drive](https://drive.google.com/file/d/19itiBcay0OSv6va1-d7c-Rhl4cqLi2FG/view?usp=drive_link)**
+
+---
 
 ### Legacy Edition (TK)
 - **纯原生体验**: 无需浏览器内核依赖，极低内存占用。
 - **稳定可靠**: 经过长时间验证的经典逻辑。
----
+
 📥 **[点击下载 / Download via Google Drive](https://drive.google.com/file/d/1RZLEMv5nYtTNErFrQc_938RjyhiMBUdl/view?usp=drive_link)**
 
 ---
