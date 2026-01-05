@@ -12,6 +12,26 @@
 >
 > **Don't want to set up Python?** Download the pre-packaged executable to run immediately!
 
+本项目目前提供两个版本：
+1. **Modern Edition (v3.0)**: 基于 PyWebView 的现代化界面，支持实时预览、更流畅的交互。
+2. **Legacy Edition (TK)**: 基于 Tkinter 的经典版本，轻量级，兼容性强。
+
+---
+
+![img](https://github.com/wangyff-code/anime_Image_segmentation/blob/main/example/view.png)
+
+### Modern Edition (v3.0)
+
+- **全新 UI 设计**: 采用磨砂玻璃质感 (Glassmorphism) 界面，操作直观。
+- **可视化参数**: 修改裁剪参数时，通过动画实时演示裁剪范围的变化。
+- **实时预览**: 处理过程中实时展示识别到的部位预览图。
+- **智能日志**: 底部状态栏实时显示处理进度和日志信息。
+📥 **[点击下载 / Download via Google Drive](https://drive.google.com/file/d/19itiBcay0OSv6va1-d7c-Rhl4cqLi2FG/view?usp=drive_link)**
+
+### Legacy Edition (TK)
+- **纯原生体验**: 无需浏览器内核依赖，极低内存占用。
+- **稳定可靠**: 经过长时间验证的经典逻辑。
+---
 📥 **[点击下载 / Download via Google Drive](https://drive.google.com/file/d/1RZLEMv5nYtTNErFrQc_938RjyhiMBUdl/view?usp=drive_link)**
 
 ---
@@ -78,13 +98,12 @@ If you want to run from source code or modify it, follow these steps. If you dow
 Ensure you have Python 3.8 or higher installed.
 
 ```bash
-# 克隆仓库 / Clone the repository
+# 克隆项目
 git clone https://github.com/wangyff-code/anime_Image_segmentation.git
 cd anime_Image_segmentation
 
-# 安装依赖库 / Install dependencies
-pip install ultralytics pillow
-# Note: tkinter is usually built-in with Python.
+# 安装依赖
+pip install -r requirements.txt
 ```
 
 ### 2. 模型准备 (Model Preparation)
@@ -94,13 +113,13 @@ This tool requires a pre-trained YOLO model file (`.pt`).
 
 *   **Model Download Link (模型下载):** [HuggingFace - yolov11m_anime_Image_segmentation](https://huggingface.co/laowanglaowang/yolov11m_anime_Image_segmentation)
 *   请确保将你的模型文件重命名为 **`best.pt`**。
-*   将 `best.pt` 放入项目根目录下。
-*   *Please rename the downloaded model to **`best.pt`** and place it in the project root directory.*
+*   将 `best.pt` 放入models。
+*   *Please rename the downloaded model to **`best.pt`** and place it in the project models directory.*
 
 ### 3. 运行程序 (Run)
 
 ```bash
-python anime_gui_packed.py
+python app_modern.py
 ```
 
 ---
@@ -124,10 +143,16 @@ Adjust the following parameters in the GUI for best results:
 
 ```text
 anime_Image_segmentation/
-├── anime_gui_packed.py   # 主程序源码 (Main source code)
-├── best.pt               # YOLO 模型权重 (Model weights - Download separately)
-├── requirements.txt      # (可选) 依赖列表 (Optional dependencies)
-└── README.md             # 说明文档 (Documentation)
+├── assets/                 # 存放前端资源
+│   └── index.html          # 新版 UI 文件
+├── models/                 # 存放模型文件
+│   └── best.pt             # YOLO 模型权重
+├── legacy/                 # 旧版归档
+│   └── app_tk.py           # (原版) Tkinter 版本的主程序
+├── app_modern.py           # (新版) PyWebView 版本的主程序 (原 main.py)
+├── requirements.txt        # 依赖列表
+├── README.md               # 项目说明文档
+└── .gitignore              # Git 忽略文件
 ```
 
 ## 📚 数据集与模型来源 (Dataset & Model Source)

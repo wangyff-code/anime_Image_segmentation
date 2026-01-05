@@ -1,0 +1,5 @@
+ultralytics
+pywebview
+Pillow
+opencv-python
+numpy

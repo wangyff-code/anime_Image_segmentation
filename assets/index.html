@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Extractor Elite</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --bg-color: #dfe6e9;
+            --panel-bg: rgba(255, 255, 255, 0.9); /*稍微增加不透明度*/
+            --text-main: #2d3436;
+            --border-radius: 16px;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            background-color: #f0f2f5;
+            background-image: radial-gradient(#b2bec3 1px, transparent 1px);
+            background-size: 20px 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* --- 左侧设置栏 --- */
+        .sidebar {
+            width: 360px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            flex-shrink: 0; /* 防止被挤压 */
+        }
+
+        h2 { margin: 0 0 5px 0; color: var(--primary); font-size: 20px; }
+        .subtitle { font-size: 12px; color: #636e72; margin-bottom: 15px; display: block;}
+
+        .section-box {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .section-label { font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #636e72; display: block; }
+
+        .path-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        input[type="text"] {
+            flex: 1; padding: 6px 10px; border: 1px solid #ccc; border-radius: 8px; outline: none; font-size: 12px;
+            background: rgba(255,255,255,0.8);
+        }
+        .btn-icon {
+            padding: 6px 10px; background: var(--secondary); color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s;
+        }
+        .btn-icon:hover { background: var(--primary); }
+
+        .target-group { display: flex; gap: 5px; background: #fff; padding: 4px; border-radius: 8px; }
+        .target-opt {
+            flex: 1; text-align: center; padding: 6px; font-size: 12px; cursor: pointer; border-radius: 6px; transition: 0.2s; color: #999;
+        }
+        .target-opt.active { background: var(--primary); color: white; font-weight: bold; }
+
+        /* --- 可视化演示区 --- */
+        .interactive-container { display: flex; gap: 10px; align-items: flex-start; }
+        .inputs-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .input-param { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+        .input-param input {
+            width: 50px; text-align: center; font-weight: bold; color: var(--primary);
+            border: 1px solid #ddd; border-radius: 4px; padding: 2px;
+        }
+
+        .demo-box {
+            width: 120px; height: 120px;
+            background: #2d3436;
+            border-radius: 8px;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* 识别区域 (蓝框) */
+        .box-original {
+            width: 50px; height: 50px;
+            border: 2px solid #00cec9;
+            background: rgba(0, 206, 201, 0.15);
+            position: absolute; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; color: #00cec9; text-align: center; line-height: 1.2;
+        }
+        /* 裁剪区域 (黄虚线) */
+        .box-expanded {
+            border: 2px dashed var(--accent);
+            position: absolute; z-index: 5;
+            transition: all 0.2s ease-out;
+            display: flex; align-items: flex-end; justify-content: flex-end;
+        }
+        .box-label-cut {
+            font-size: 9px; color: var(--accent); padding: 2px;
+        }
+
+        .btn-main {
+            width: 100%; padding: 12px; border: none; border-radius: 12px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; letter-spacing: 1px;
+            margin-top: 10px; transition: 0.2s;
+        }
+        .btn-start { background: linear-gradient(135deg, var(--secondary), var(--primary)); box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3); }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(108, 92, 231, 0.5); }
+        .btn-stop { background: #ff7675; display: none; }
+
+        /* --- 右侧主界面 --- */
+        .main-panel {
+            flex: 1; display: flex; flex-direction: column; gap: 20px;
+            min-width: 0; /* 允许 flex 子项缩小 */
+        }
+
+        .preview-card {
+            flex: 1; background: white; border-radius: var(--border-radius);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+        .preview-img {
+            max-width: 95%; max-height: 95%; object-fit: contain;
+            border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .placeholder { text-align: center; color: #b2bec3; }
+        .status-badge {
+            position: absolute; top: 15px; left: 15px;
+            background: rgba(0,0,0,0.7); color: white; padding: 5px 12px;
+            border-radius: 20px; font-size: 12px; display: none;
+        }
+
+        /* --- 底部信息栏 (修复抖动核心) --- */
+        .info-bar {
+            background: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            /* 1. 固定高度，防止被内容撑开导致父级布局变化 */
+            height: 70px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0; 
+        }
+
+        .progress-wrapper {
+            height: 8px; background: #f1f2f6; border-radius: 4px; overflow: hidden;
+            margin-top: 5px; margin-bottom: 5px;
+        }
+        .progress-fill {
+            height: 100%; width: 0%; background: var(--primary);
+            border-radius: 4px; transition: width 0.3s ease-out;
+        }
+        .stats-row {
+            display: flex; justify-content: space-between; font-size: 12px; color: #636e72; font-family: monospace;
+        }
+        
+        /* 2. 日志行核心修复 */
+        .log-line {
+            font-size: 12px; color: #aaa; 
+            font-family: 'Consolas', monospace;
+            /* 强制单行显示 */
+            white-space: nowrap; 
+            /* 隐藏溢出内容 */
+            overflow: hidden; 
+            /* 超出部分用省略号表示 */
+            text-overflow: ellipsis; 
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <h2>Anime Extractor</h2>
+            <span class="subtitle">智能部位提取与裁剪工具 v3.0</span>
+        </div>
+
+        <div class="section-box">
+            <span class="section-label">工作区</span>
+            <div class="path-row">
+                <input type="text" id="src" placeholder="输入文件夹..." readonly>
+                <button class="btn-icon" onclick="app.selectFolder('src')">📂</button>
+            </div>
+            <div class="path-row">
+                <input type="text" id="dst" placeholder="输出文件夹..." readonly>
+                <button class="btn-icon" onclick="app.selectFolder('dst')">📂</button>
+            </div>
+        </div>
+
+        <div class="section-box">
+            <span class="section-label">提取部位 & 后缀</span>
+            <div class="target-group">
+                <div class="target-opt active" onclick="app.setTarget(0, this)">Head</div>
+                <div class="target-opt" onclick="app.setTarget(1, this)">Torso</div>
+                <div class="target-opt" onclick="app.setTarget(2, this)">Legs</div>
+            </div>
+            <input type="text" id="suffix" value="_head" style="width: 93%; margin-top: 8px;">
+        </div>
+
+        <div class="section-box">
+            <span class="section-label">边缘扩充 (比例 0.1=10%)</span>
+            <div class="interactive-container">
+                <div class="inputs-col">
+                    <div class="input-param">
+                        顶部 (Top)
+                        <input type="number" id="inp-top" value="0.2" step="0.05" min="0" max="2.0" oninput="app.updateVisual()">
+                    </div>
+                    <div class="input-param">
+                        底部 (Btm)
+                        <input type="number" id="inp-btm" value="0.2" step="0.05" min="0" max="2.0" oninput="app.updateVisual()">
+                    </div>
+                    <div class="input-param">
+                        左右 (Side)
+                        <input type="number" id="inp-side" value="0.2" step="0.05" min="0" max="2.0" oninput="app.updateVisual()">
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <div class="box-expanded" id="vis-exp">
+                        <span class="box-label-cut">裁剪区域</span>
+                    </div>
+                    <div class="box-original">识别区域</div>
+                </div>
+            </div>
+            <div style="font-size: 10px; color: #999; margin-top: 5px; text-align: center;">* 真实预览图中将显示识别青框</div>
+        </div>
+
+        <div>
+            <button id="btn-start" class="btn-main btn-start" onclick="app.start()">🚀 开始提取</button>
+            <button id="btn-stop" class="btn-main btn-stop" onclick="app.stop()">⏹ 停止任务</button>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <div class="preview-card">
+            <div class="status-badge" id="status-badge">就绪</div>
+            <div class="placeholder" id="placeholder">
+                <div style="font-size: 40px; margin-bottom: 10px;">🖼️</div>
+                等待开始... <br> 实时预览将显示在此处
+            </div>
+            <img class="preview-img" id="preview-img" style="display: none;">
+        </div>
+
+        <div class="info-bar">
+            <div class="stats-row">
+                <span id="progress-text">进度: 0%</span>
+                <span id="count-text">0 / 0</span>
+            </div>
+            <div class="progress-wrapper">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <!-- 添加 title 属性，鼠标悬停可以看完整日志 -->
+            <div class="log-line" id="log-line" title="日志区域">> 系统就绪</div>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            state: {
+                tId: 0,
+                suffixMap: {0: '_head', 1: '_torso', 2: '_legs'}
+            },
+
+            updateVisual() {
+                const top = parseFloat(document.getElementById('inp-top').value) || 0;
+                const btm = parseFloat(document.getElementById('inp-btm').value) || 0;
+                const side = parseFloat(document.getElementById('inp-side').value) || 0;
+
+                const baseSize = 50; 
+                const expBox = document.getElementById('vis-exp');
+                
+                const w = baseSize;
+                const h = baseSize;
+
+                const addTop = h * top;
+                const addBtm = h * btm;
+                const addSide = w * side;
+
+                const newW = w + (addSide * 2);
+                const newH = h + addTop + addBtm;
+
+                expBox.style.width = newW + 'px';
+                expBox.style.height = newH + 'px';
+                
+                const shiftY = (addBtm - addTop) / 2;
+                expBox.style.transform = `translateY(${shiftY}px)`;
+            },
+
+            selectFolder(type) {
+                pywebview.api.select_folder().then(p => {
+                    if(p) document.getElementById(type).value = p;
+                });
+            },
+
+            setTarget(id, el) {
+                this.state.tId = id;
+                document.querySelectorAll('.target-opt').forEach(d => d.classList.remove('active'));
+                el.classList.add('active');
+                document.getElementById('suffix').value = this.state.suffixMap[id];
+            },
+
+            start() {
+                const src = document.getElementById('src').value;
+                const dst = document.getElementById('dst').value;
+                if(!src || !dst) return alert('请设置文件夹');
+
+                document.getElementById('btn-start').style.display = 'none';
+                document.getElementById('btn-stop').style.display = 'block';
+                this.setStatus("初始化...");
+                this.updateProgress(0, 0, 0);
+
+                const config = {
+                    src, dst,
+                    target_id: this.state.tId,
+                    suffix: document.getElementById('suffix').value,
+                    params: [
+                        parseFloat(document.getElementById('inp-top').value),
+                        parseFloat(document.getElementById('inp-btm').value),
+                        parseFloat(document.getElementById('inp-side').value)
+                    ]
+                };
+                pywebview.api.start_process(config);
+            },
+
+            stop() {
+                pywebview.api.stop_process();
+                this.setStatus("正在停止...");
+            },
+
+            log(msg, type) {
+                const el = document.getElementById('log-line');
+                el.textContent = '> ' + msg;
+                el.title = msg; // 鼠标悬停显示完整内容
+                if(type === 'error') el.style.color = '#ff7675';
+                else if(type === 'success') el.style.color = '#00b894';
+                else el.style.color = '#aaa';
+            },
+
+            setStatus(msg) {
+                const badge = document.getElementById('status-badge');
+                badge.style.display = 'block';
+                badge.textContent = msg;
+            },
+
+            updateProgress(percent, current, total) {
+                document.getElementById('progress-fill').style.width = percent + '%';
+                document.getElementById('progress-text').textContent = `进度: ${percent}%`;
+                document.getElementById('count-text').textContent = `${current} / ${total}`;
+            },
+
+            updatePreview(b64) {
+                document.getElementById('placeholder').style.display = 'none';
+                const img = document.getElementById('preview-img');
+                img.style.display = 'block';
+                img.src = b64;
+            },
+
+            finishProcess(msg) {
+                document.getElementById('btn-start').style.display = 'block';
+                document.getElementById('btn-stop').style.display = 'none';
+                this.setStatus("待机");
+                alert(msg);
+                this.log(msg);
+            }
+        };
+
+        app.updateVisual();
+        window.app = app;
+    </script>
+</body>
+</html>
