@@ -26,9 +26,9 @@
 - **可视化参数**: 修改裁剪参数时，通过动画实时演示裁剪范围的变化。
 - **实时预览**: 处理过程中实时展示识别到的部位预览图。
 - **智能日志**: 底部状态栏实时显示处理进度和日志信息。
+- **超小体积**: 66M的EXE
 
-📥 **[点击下载 / Download via Google Drive](https://drive.google.com/file/d/19itiBcay0OSv6va1-d7c-Rhl4cqLi2FG/view?usp=drive_link)**
-
+📥 **[点击下载 ](https://github.com/wangyff-code/anime_Image_segmentation/releases/download/onnx_cpu_update/AnimeExtractor_onnx_v1_0.exe)**
 ---
 
 ### Legacy Edition (TK)
